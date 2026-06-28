@@ -41,7 +41,6 @@ def load_so_module(so_path):
     
     # Fallback: try running as executable
     try:
-        # Make executable
         os.chmod(so_path, 0o755)
         print(f"{c}[*] Running as executable...{w}")
         subprocess.run([so_path], check=True)
@@ -62,24 +61,20 @@ def main():
         input(f"\n{y}Press Enter to exit...{w}")
         sys.exit(1)
     
-    # Use the first .so found
     so_file = so_files[0]
     print(f"{g}[+] Found: {so_file}{w}")
     
-    # Try to load the module
     result = load_so_module(so_file)
     
     if result is None:
         print(f"{r}[!] Failed to load {so_file}{w}")
         sys.exit(1)
     
-    # If it returned a module, try to run main()
     if hasattr(result, 'main'):
         print(f"{g}[+] Module loaded successfully!{w}")
         print(f"{c}[*] Starting bypass_cyber...{w}")
         time.sleep(1)
         try:
-            # Check if main is async
             import asyncio
             if asyncio.iscoroutinefunction(result.main):
                 asyncio.run(result.main())
@@ -90,7 +85,6 @@ def main():
         except Exception as e:
             print(f"{r}[!] Error: {e}{w}")
     elif result is True:
-        # Already running via subprocess
         pass
     else:
         print(f"{y}[!] Module loaded but no main() found.{w}")
